@@ -7,10 +7,6 @@ from pyairtable.formulas import match
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": r"https://*.vercel.app"}})  # Allow CORS for specified domain
 
-# Airtable API configuration
-AIRTABLE_API_KEY = 'patsFqbRqun6dUd2J.ac98f1950d92ace45ecb36edc8fb73956d10cf63975540135821f13df6814b9b'
-BASE_ID = "appdXx9TjXKr6XqeL"
-TABLE_NAME_LOCATIONS = "Route Requests"
 
 # Initialize Airtable Table
 locations_table = Table(AIRTABLE_API_KEY, BASE_ID, TABLE_NAME_LOCATIONS)
