@@ -1,49 +1,22 @@
-import React from 'react';
-
-const ThankYouPage: React.FC = () => {
-  return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Thank You!</h1>
-        <p style={styles.message}>We appreciate your input.</p>
-        <p style={styles.subMessage}>You can safely close this tab now.</p>
-      </div>
-    </div>
-  );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f7f7f7', // Light background for contrast
-  },
-  card: {
-    textAlign: 'center' as const, // Ensures all content inside the card is centered
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px', // Rounded corners for the card
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
-    maxWidth: '400px',
-    width: '90%',
-  },
-  title: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '1rem',
-    color: '#333', // Darker color for the title text
-  },
-  message: {
-    fontSize: '16px',
-    color: '#555', // Medium gray for better readability
-    marginBottom: '1rem',
-  },
-  subMessage: {
-    fontSize: '14px',
-    color: '#777', // Lighter gray for secondary text
-  },
-};
-
-export default ThankYouPage;
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { api } from '../api';
+type SavedRoute = { id: number; start_lat: number; start_lng: number; end_lat: number; end_lng: number; status: string; created_at: string };
+export default function ThankYouPage() {
+  const [routes, setRoutes] = useState<SavedRoute[]>([]);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { api('/routes').then(result => setRoutes(result.routes)).catch(e => setError(e.message)).finally(() => setLoading(false)); }, []);
+  return <main className="account"><section className="card">
+    <p className="eyebrow">YOUR ROUTE REQUESTS</p><h1>Request received</h1>
+    <p>Your request has been saved. This prototype records requests; it does not dispatch a ride.</p>
+    {loading && <p>Loading saved requests…</p>}{error && <p role="alert">{error}</p>}
+    {routes.map(route => <article className="route-card" key={route.id}>
+      <strong>Request #{route.id} · {route.status}</strong>
+      <p>Pickup: {route.start_lat.toFixed(5)}, {route.start_lng.toFixed(5)}</p>
+      <p>Dropoff: {route.end_lat.toFixed(5)}, {route.end_lng.toFixed(5)}</p>
+      <small>Saved {route.created_at} UTC</small>
+    </article>)}
+    <Link to="/">Choose another route</Link>
+  </section></main>;
+}

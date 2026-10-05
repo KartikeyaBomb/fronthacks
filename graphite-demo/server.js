@@ -25,7 +25,10 @@ app.get('/search', (req, res) => {
   // Filter tasks based on the query
   const filteredTasks = tasks.filter(task => task.description.toLowerCase().includes(query));
 
-  res.json(filteredTasks);
+  // Sort the filtered tasks alphabetically by description
+  const sortedTasks = filteredTasks.sort((a, b) => a.description.localeCompare(b.description));
+
+  res.json(sortedTasks);
 });
 
 app.listen(port, () => {
